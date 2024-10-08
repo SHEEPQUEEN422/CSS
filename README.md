@@ -162,8 +162,8 @@ f.readline()
 f.__next__()
     
 with open("my_first_file.txt", "a") as f:  
-json.loads(str)   # string outputs list or dict
-json.dumps([])    #list or dict outputs string
+json.loads(str)             # string outputs list or dict
+json.dumps([])              #list or dict outputs string
 
 ### contextmanager    
 @contextlib.contextmanager
@@ -175,7 +175,7 @@ def cont():
         yield 
     print()
 with cont() as outp: 
-    print(outp)              # define the contextmanager first and then input values 
+    print(outp)                  # define the contextmanager first and then input values 
 
 ### Decorator
 def default(condition):
@@ -188,7 +188,6 @@ def default(condition):
 def function():
     return
      
-
 ### Numpy (good at multidimensions and vectors)
 np.arange()
 np.array()
@@ -201,7 +200,7 @@ np.ones((,))
 np.absolute()
 
 ------------------------------------------------------------------------------------------------------------
-expr=x**3-2*x+5        # Newton's Method
+expr=x**3-2*x+5          # Newton's Method
 initial_guess =[1,3]
 for guess in intial_guess:
      sol = sympy.nsolve(expr, x, guess)
