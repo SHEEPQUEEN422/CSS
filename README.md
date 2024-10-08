@@ -1,4 +1,4 @@
-# Basic
+# CSS
 ## Symbolic Computing
 import sympy
 sympy.init_printing()   #works in some non-interactive environment
