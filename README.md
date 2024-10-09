@@ -351,3 +351,148 @@ dtm(2021,5,30,tzinfo=PDT)   # only can fill integers
 ```
 dat.astimezone(PDT)      # more flexible
 ```
+
+
+## Plots
+```
+dat.hist()
+```
+### Plt
+```
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=())
+
+figure, axes = plt.subplots(2, 2)    # multiple subplots 
+axes[0, 0].scatter(x , y, color , marker , linestyle, linewidth)    #scatter
+axes[0, 1].bar(x, y)
+ax3=axes[0,1].twinx()      # creates a secondary axis on the right
+axes[1, 0].hist(x,bins,histtype,label)
+axes[2, 0].boxplot(x,positions)
+
+ax.set_title('')
+ax.legend()
+ax.set_xlabel('')
+ax.tick_params('', colors)
+ax.despine()
+
+plt.show()
+```
+------------------------------------------------------------------------------------------------------------
+
+### Seaborn
+
+```
+import seaborn as sns
+
+sns.displot(data,x,kind='hist/ked/ecdf',rug,kde,kde_kws,stat,palette) # continuous
+sns.catplot(data,x,y,hue,kind,order,legend_out)  # categorical
+```
+### lineplot
+```
+sns.lineplot(x,y)
+```
+### Scatter
+```
+sns.relplot(data,x,y,hue,col) # continuous * continuous
+```
+### Regression
+```
+sns.lmplot(data,x,y,hue,robust,ci,order)  # continuous * continuous, specifically regression
+```
+#### or
+```
+sns.regplot(x,y,data)
+```
+#### or logistic regression
+```
+sns.regplot(x,y,data,logistic = True)
+```
+#### Residual
+```
+sns.residplot(x,y,data,lowess)
+
+sns.jointplot(data,x,y,hue,kind)    # continuous * continuous,with distribution plots 
+
+tab=pd.crosstab(x,y,values,aggfunction,normalize = 'index') # Discrete * Discrete
+tab.cumsum(axis).stack().reset_index(name)     # axis=0 column, axis=1 row
+
+sns.set_palette()  
+```
+------------------------------------------------------------------------------------------------------------
+### Plotnine-ggplot
+```
+from plotnine import ggplot, geom_point, aes, stat_smooth, facet_wrap
+
+(
+    ggplot(dat,aes(x,y,color))
+    +geom_point()          # various kinds
+    +stat_smooth(method='lm')   # statistical layer
+    +facet_wrap(factor)            # one-variable subplots
+)
+```
+------------------------------------------------------------------------------------------------------------
+### Cartopy
+```
+import cartopy.crs as ccrs
+import cartopy.util as cutil
+import cartopy.io.img_tiles as cimgt
+import cartopy.feature as cfeature
+
+lon = np.linspace(-180, 180, 360)
+lat = np.linspace(-90, 90, 180)
+lon, lat = np.meshgrid(lon, lat)
+data = np.sin(np.radians(lat)) * np.cos(np.radians(lon)) # adding longitude and latitude data
+plt.figure(figsize=(10, 5))
+ax2 = plt.axes(projection=ccrs.PlateCarree())   # choose a projection(Mercator,Orthographic)
+ax2.set_global() 
+contour = ax2.contourf(lon, lat, data,
+                       transform=ccrs.PlateCarree(), cmap='RdBu')   # fill the contour plot(optional)
+ax2.coastlines() 
+plt.show()
+```
+------------------------------------------------------------------------------------------------------------
+### Plotly
+```
+import plotly.express as px 
+import plotly.graph_objects as go 
+from plotly.subplots import make_subplots
+
+px.histogram(dat,x,color,nbins,marginal,histnorm, title,labels={'title':{'text':'My title'}})
+px.bar(dat,x,y,color,barmode,hover_data)
+px.box(dat,x,y,color,notched,points)
+px.scatter(dat,x,y,color,title,hover_data,marginal_X,marginal_y,trendline,log_x,log_y)
+px.scatter_matrix(dat,dimensions)
+
+corm=educ.corr(method,numeric_only)       # correlation data, method= 'kendall' and 'spearman'，‘pearson’
+px.imshow(corm,color_continuous_scale,zmin,zmax)    # heatmap,image plots
+
+g.update_layout(title={'text': 'Updated Title'},width,height)
+g.updata_traces(diagnol_visible)     # figures on the diagnol line
+g.update_xaxes(title_text='X Label')
+g.update_yaxes(title_text='Y Label')
+```
+### Complete control over figures
+```
+f=go.Figure()
+```
+#### or
+```
+f=make_subplots(row,cols,subplot_titles)
+
+f.add_trace(go.Bar(name,x,y,error_y))
+f.add_trace(go.Histogram(x,nbinsx,name),row,col)  # using for to add more traces
+f.add_trace(go.Scatter(x,y,mode,name))
+```
+### dropdown_buttons
+```
+dropdown_buttons=[dict(label,method,args=[{'visible': [True, False, False, False]},{'title': 'Education'}])]
+f.update_layout(barmode,updatemenus=['type': "dropdown",'x': 1.3,'y': 0.5,'showactive': True,'active': 0,'buttons': dropdown_buttons])
+```
+### sliders
+```
+px.scatter(dat,x,y,color,size,animation_frame,animation_group,log_x,size_max,range_x,range_y)
+
+fig['layout'].pop('updatemenus')  # for removing the interactive buttons
+f.show()
+```
