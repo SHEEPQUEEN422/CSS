@@ -1,5 +1,4 @@
-# Basic
-## Symbolic Computing
+# **Symbolic Computing**
 ```
 import sympy
 sympy.init_printing()   #works in some non-interactive environment
@@ -228,7 +227,8 @@ for guess in intial_guess:
 ```
 
 
-## Dataset
+
+# **Dataset**
 ```
 import pandas as pd
 import numpy as np
@@ -353,7 +353,7 @@ dat.astimezone(PDT)      # more flexible
 ```
 
 
-## Plots
+# **Plots**
 ```
 dat.hist()
 ```
@@ -496,3 +496,245 @@ px.scatter(dat,x,y,color,size,animation_frame,animation_group,log_x,size_max,ran
 fig['layout'].pop('updatemenus')  # for removing the interactive buttons
 f.show()
 ```
+
+
+# **Regression**
+
+### Cross-Validation
+```
+from sklearn.model_selection import train_test_split, LeaveOneOut, cross_val_score, KFold
+```
+#### 1. Validation set approach
+```
+X_train, X_test,y_train,y_test= train_test_split(X,y,test_size,random_state)
+```
+#### 2.LOOCV
+```
+cv=LeaveOneOut()
+model=LinearRegression()
+get_scorer_names()       # list of scoring
+np.mean(np.absolute(scores))
+```
+```
+for train_index,test_index in cv.split(X):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+```
+#### 3.K-fold 
+```
+cv=KFold(n_splits,random_state,shuffle)
+```
+#### 4.K-nearest neighbors classifier
+```
+knn= KNeighborsClassifier(n_neighbors=10).fit(X,y)
+```
+##### search best K
+```
+bigK = list(range(1, 100))
+for i in bigK:
+    cv = KFold(n_splits = 10, random_state = 1234, shuffle = True)
+    knn=KNeighborsClassifier(n_neighbors=i)
+    scores=corss_val_score(knn,X,y,scoring='accuracy',cv=cv,n_jobs=-1)
+    errmea.append(1-scores.mean())
+print(f'best k is {str(bigK[errmea.index(min(errmea))])}')
+sns.lineplot(x=bigK,y=errma)    
+plt.scatter(bigK[errmea.index(min(errmea))], min(errmea), marker='X', color = 'red')
+plt.text(x,y,f'(x,y)',color,fontsize)
+```
+#### 4.Subset selection
+##### Best subset selection (linear regression-RSS; logistic regression-deviance)
+```
+def powerset(s):
+    sets=[[]]
+    for i in s:
+        newsets=[]
+        for k in sets:
+            newsets.append(k+[i])
+        sets+=newsets
+    return sets
+def best_subset_selection(est,X,y,cvn=5):
+    modsAll=powerSet(X.columns)
+    mods={}
+    for i in modsAll:
+        if i==[]:
+            mods[0]={'model':'Null',
+                    'RSS':np.sum((y-np.mean(y)**2))}
+        else:
+            rss=np.sum((y-est.fit(X[i],y).predict(X[i]))**2)
+            if len(i) not in mods:
+                mods[len(i)]={'model':i,'RSS':rss}
+            else:
+                if mods[len(i)]['RSS']>rss:
+                    mods[len(i)]={'model':i,'RSS':rss}
+    bestmod=mods.pop(0)
+    bestmod.pop('RSS')
+    bestmod['Rsquared']=0
+    for i in mods.values():
+        score=cross_val_score(est,X[i['model']],y,cv=cvn,scoring='r2').mean()
+        if bestmod['Rsquared']<score:
+            bestmod['model']=i['model']
+            bestmod['Rsquared']=score
+    return(bestmod)
+```
+##### Stepwise selection: forward selection
+```
+def forward_subset_selection(est,X,y,cvn=5):
+    variables=list(X.columns)
+    mods={}
+    mods[0]={'model':[],'RSS':np.sum(y-np.mean(y)**2)}
+```    
+        
+##### Stepwise selection: backward selection
+##### Cp,AIC,BIC,Adjusted R2
+
+### Statsmodel
+```
+import statsmodels.api as sm
+kx1=sm.add_constant(X_train,prepend=False)        # fits a regression model
+kx2=sm.add_constant(X_test)
+model=sm.OLS(y_train,kx1).fit()
+y_pred=model.predict(kx2)
+model.summary()
+```
+### statsmodel more readable way(but difficult for data splitting)
+```
+from statsmodels.formula.api import ols
+
+model=ols('y~x+z',data).fit()
+model.params  # get co-efficients
+model.fittedvalues # get fitted values
+model.resid # get residuals
+```
+### Scikit-learn
+```
+from sklearn.linear_model import LinearRegression
+reg= LinearRegression().fit(X_train,y_train)
+y_pre=reg.predict(X_test)
+```
+### Diagnostics
+```
+from statsmodels.stats.anova import anova_lm
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+from statsmodels.graphics.regressionplots import plot_partregress_grid, influence_plot
+
+model.summary()
+```
+### R-squared  proportion of explained variables
+```model.rsquared```
+### MSE
+```np.sum((y_pre-y_test)**2)
+mean_squared_error(X, y)
+```
+### MSEresid
+```model.mse_resid```
+### RSE
+```np.sqrt(mse)```
+### Heteroscedasticity
+```sns.residplot(x,y,data,lowess)```
+### Outlier
+```model.get_influence().summary_frame()```
+### Studentized_resid  or np.abs()  -2~2
+```sns.regplot(x = 'fittedvalues', y = 'student_resid', x_jitter = 0.1, y_jitter = 0.1, data = summary_info, lowess = True)
+```
+### Leverage - hat_diag >(k+1)/n
+```sns.scatterplot(x = 'hat_diag', y = 'student_resid', data = summary_info)
+```
+### leverage x cook's-d >1
+```sns.scatterplot(x = 'hat_diag', y = 'cooks_d', data = summary_info)
+```
+### Multicollinearity
+```sns.pairplot(data[[]])
+variance_inflation_factor(data.values,i) for i in range(data.shape[1])  #shape[0] gives the number of rows. shape[1] gives the number of columns.
+```
+### Model Improvement
+```anova_lm(model, model3)
+```
+### Model plots
+```plot_partregress_grid(model)
+influence_plot(model)
+```
+# CV MSE
+scores=cross_val_score(model,X,y,scoring='neg_mean_squared_error',cv=cv)
+np.mean(np.absolute(scores))
+# CV ErR
+scores=corss_val_score(model,X,y,scoring='accuracy',cv=cv,n_jobs=-1)
+1-scores.mean()
+------------------------------------------------------------------------------------------------------------
+
+#Logistic Regression
+
+# Statsmodel
+from statsmodels.formula.api import logit
+
+logit('y~x', data = chile_clean).fit()
+
+# Scikit-learn
+from sklearn.linear_model import LogisticRegression
+
+# create dummies
+data['result']=np.where()
+pd.get_dummies(data,prefix,drop_first=True)
+dummies.astype(int)
+pd.concat()
+X=dat[[]]
+y=dat[]
+
+# check polynomial 
+for p in list(range(1,4)):
+    if p==1:
+        X=pd.DataFrame({
+            'age_1': data['age']
+        })
+    else:
+        X['age_'+str(p)]=X['age_1']**p
+
+model=LogisticRegression(solver= 'newton-cg')
+model.fit(X,y)
+
+model.intercept_      # or np.exp() 
+model.coef_
+
+
+------------------------------------------------------------------------------------------------------------
+
+
+# Generative models of classification
+#1. Linear Discriminant Analysis- different from logistic regression, needs Gaussian Distribution in X and similar covariance in y
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
+from sklearn.inspection import DecisionBoundaryDisplay
+
+X,y=dat1,dat2
+model=LinearDiscriminantAnalysis()
+model.fit(X, y)
+DecisionBoundaryDisplay.from_estimator(model, X, response_method="predict"/'predict_proba',
+                                             alpha=0.5, cmap=plt.cm.coolwarm)
+fig.ax_.scatter(x = chile_clean['logincome'], y = chile_clean['age'],c=chile_clean['vote'],alpha=0.5,cmap=plt.cm.coolwarm)
+
+#2.Quadratic Discriminant Analysis
+QuadraticDiscriminantAnalysis()
+model.fit(X, y)
+
+#3.Naive Bayes
+GaussianNB()
+model.fit(X, y)
+
+y_pre=model.predict(X_test)
+
+# Confusion Matrix
+confusion_matrix(y, y_pre)
+# Classification Report
+classification_report(y, y_pre)
+
+
+
+
+
+
+
+
+
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.feature_selection import SequentialFeatureSelector
