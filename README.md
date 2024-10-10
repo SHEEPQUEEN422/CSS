@@ -620,24 +620,36 @@ from statsmodels.graphics.regressionplots import plot_partregress_grid, influenc
 model.summary()
 ```
 ### R-squared  proportion of explained variables
-```model.rsquared```
+```
+model.rsquared
+```
 ### MSE
 ```np.sum((y_pre-y_test)**2)
 mean_squared_error(X, y)
 ```
 ### MSEresid
-```model.mse_resid```
+```
+model.mse_resid
+```
 ### RSE
-```np.sqrt(mse)```
+```
+np.sqrt(mse)
+```
 ### Heteroscedasticity
-```sns.residplot(x,y,data,lowess)```
+```
+sns.residplot(x,y,data,lowess)
+```
 ### Outlier
-```model.get_influence().summary_frame()```
+```
+model.get_influence().summary_frame()
+```
 ### Studentized_resid  or np.abs()  -2~2
-```sns.regplot(x = 'fittedvalues', y = 'student_resid', x_jitter = 0.1, y_jitter = 0.1, data = summary_info, lowess = True)
+```
+sns.regplot(x = 'fittedvalues', y = 'student_resid', x_jitter = 0.1, y_jitter = 0.1, data = summary_info, lowess = True)
 ```
 ### Leverage - hat_diag >(k+1)/n
-```sns.scatterplot(x = 'hat_diag', y = 'student_resid', data = summary_info)
+```
+sns.scatterplot(x = 'hat_diag', y = 'student_resid', data = summary_info)
 ```
 ### leverage x cook's-d >1
 ```sns.scatterplot(x = 'hat_diag', y = 'cooks_d', data = summary_info)
