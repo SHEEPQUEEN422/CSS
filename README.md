@@ -652,34 +652,43 @@ sns.regplot(x = 'fittedvalues', y = 'student_resid', x_jitter = 0.1, y_jitter = 
 sns.scatterplot(x = 'hat_diag', y = 'student_resid', data = summary_info)
 ```
 ### leverage x cook's-d >1
-```sns.scatterplot(x = 'hat_diag', y = 'cooks_d', data = summary_info)
+```
+sns.scatterplot(x = 'hat_diag', y = 'cooks_d', data = summary_info)
 ```
 ### Multicollinearity
-```sns.pairplot(data[[]])
+```
+sns.pairplot(data[[]])
 variance_inflation_factor(data.values,i) for i in range(data.shape[1])  #shape[0] gives the number of rows. shape[1] gives the number of columns.
 ```
 ### Model Improvement
-```anova_lm(model, model3)
+```
+anova_lm(model, model3)
 ```
 ### Model plots
-```plot_partregress_grid(model)
+```
+plot_partregress_grid(model)
 influence_plot(model)
 ```
-# CV MSE
+### CV MSE
+```
 scores=cross_val_score(model,X,y,scoring='neg_mean_squared_error',cv=cv)
 np.mean(np.absolute(scores))
-# CV ErR
+```
+### CV ErR
+```
 scores=corss_val_score(model,X,y,scoring='accuracy',cv=cv,n_jobs=-1)
 1-scores.mean()
+```
 ------------------------------------------------------------------------------------------------------------
 
-#Logistic Regression
+## Logistic Regression
 
-# Statsmodel
+### Statsmodel
+```
 from statsmodels.formula.api import logit
 
 logit('y~x', data = chile_clean).fit()
-
+```
 # Scikit-learn
 from sklearn.linear_model import LogisticRegression
 
