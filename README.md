@@ -689,18 +689,22 @@ from statsmodels.formula.api import logit
 
 logit('y~x', data = chile_clean).fit()
 ```
-# Scikit-learn
-from sklearn.linear_model import LogisticRegression
+### Scikit-learn
 
-# create dummies
+```
+from sklearn.linear_model import LogisticRegression
+```
+#### create dummies
+```
 data['result']=np.where()
 pd.get_dummies(data,prefix,drop_first=True)
 dummies.astype(int)
 pd.concat()
 X=dat[[]]
 y=dat[]
-
-# check polynomial 
+```
+#### check polynomial 
+```
 for p in list(range(1,4)):
     if p==1:
         X=pd.DataFrame({
@@ -714,13 +718,14 @@ model.fit(X,y)
 
 model.intercept_      # or np.exp() 
 model.coef_
-
+```
 
 ------------------------------------------------------------------------------------------------------------
 
 
-# Generative models of classification
-#1. Linear Discriminant Analysis- different from logistic regression, needs Gaussian Distribution in X and similar covariance in y
+### Generative models of classification
+#### 1. Linear Discriminant Analysis- different from logistic regression, needs Gaussian Distribution in X and similar covariance in y
+```
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from sklearn.inspection import DecisionBoundaryDisplay
 
@@ -730,22 +735,27 @@ model.fit(X, y)
 DecisionBoundaryDisplay.from_estimator(model, X, response_method="predict"/'predict_proba',
                                              alpha=0.5, cmap=plt.cm.coolwarm)
 fig.ax_.scatter(x = chile_clean['logincome'], y = chile_clean['age'],c=chile_clean['vote'],alpha=0.5,cmap=plt.cm.coolwarm)
-
-#2.Quadratic Discriminant Analysis
+```
+#### 2.Quadratic Discriminant Analysis
+```
 QuadraticDiscriminantAnalysis()
 model.fit(X, y)
-
-#3.Naive Bayes
+```
+#### 3.Naive Bayes
+```
 GaussianNB()
 model.fit(X, y)
 
 y_pre=model.predict(X_test)
-
-# Confusion Matrix
+```
+### Confusion Matrix
+```
 confusion_matrix(y, y_pre)
-# Classification Report
+```
+### Classification Report
+```
 classification_report(y, y_pre)
-
+```
 
 
 
