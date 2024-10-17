@@ -41,7 +41,6 @@ from sympy.plotting import plot
 
 plot(f,g,xlim,ylim,xlabel,ylabel,legend)
 ```
-------------------------------------------------------------------------------------------------------------
 
 
 ### List
@@ -74,7 +73,8 @@ dict.items()/.keys()/.values()
 max(dict1,key=dict1.get)   # .get a function getting specific value 
 np.argmax
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ### Function
 ```
 assert condition,"Optional error message"
@@ -111,7 +111,7 @@ tuple1=[(function,args),(function,args)]
 for func,arg in tuple1:
     x(y)                 # batch functions iterator
 ```
-------------------------------------------------------------------------------------------------------------
+
 
 ### Class
 ```
@@ -157,7 +157,7 @@ finally:                         # executes after trying
     print
 ```
 
-------------------------------------------------------------------------------------------------------------
+
 ### File
 ```
 with open('text.txt','w')as f:      
@@ -216,7 +216,8 @@ np.random.rand()
 np.ones((,))
 np.absolute()
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ```
 expr=x**3-2*x+5          # Newton's Method
 initial_guess =[1,3]
@@ -254,7 +255,8 @@ dat.sort_values('',ascending)
 import plotly.graph_objects as go    # drawing table
 go.Figure(data=[go.Table(header=dict(values,fill_color,align),cells=dict(values,fill_color,align))])
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ### Indexing & Related Manipulating
 ```
 dat.set_index()        # set columns to indexes
@@ -378,7 +380,8 @@ ax.despine()
 
 plt.show()
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 
 ### Seaborn
 
@@ -419,7 +422,8 @@ tab.cumsum(axis).stack().reset_index(name)     # axis=0 column, axis=1 row
 
 sns.set_palette()  
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ### Plotnine-ggplot
 ```
 from plotnine import ggplot, geom_point, aes, stat_smooth, facet_wrap
@@ -431,7 +435,8 @@ from plotnine import ggplot, geom_point, aes, stat_smooth, facet_wrap
     +facet_wrap(factor)            # one-variable subplots
 )
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ### Cartopy
 ```
 import cartopy.crs as ccrs
@@ -451,7 +456,8 @@ contour = ax2.contourf(lon, lat, data,
 ax2.coastlines() 
 plt.show()
 ```
-------------------------------------------------------------------------------------------------------------
+
+
 ### Plotly
 ```
 import plotly.express as px 
@@ -679,7 +685,7 @@ np.mean(np.absolute(scores))
 scores=corss_val_score(model,X,y,scoring='accuracy',cv=cv,n_jobs=-1)
 1-scores.mean()
 ```
-------------------------------------------------------------------------------------------------------------
+
 
 ## Logistic Regression
 
@@ -719,8 +725,6 @@ model.fit(X,y)
 model.intercept_      # or np.exp() 
 model.coef_
 ```
-
-------------------------------------------------------------------------------------------------------------
 
 
 ### Generative models of classification
