@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CSS
 ## Symbolic Computing
 import sympy
@@ -206,3 +207,8 @@ for guess in intial_guess:
      sol = sympy.nsolve(expr, x, guess)
     if 1 <= sol <= 2 or sympy.exp(1) <= sol <= 4:
         solutions.append(sol)
+=======
+# Basic
+Thu Oct 17 10:25:05 PDT 2024
+>>>>>>> d3f1427 (Auto-update Thu Oct 17 10:27:17 PDT 2024)
+Thu Oct 17 10:30:30 PDT 2024
