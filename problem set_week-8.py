@@ -21,7 +21,7 @@ anes.head()
 #1.Fit a KNN model that predicts vote in the 2016 election based on the feeling thermometer (feel_rep_cand_cont) and the age (age_cont).
 #Find the optimal K between 1 and 21, 2 by 2. Use 4-Fold cross-validation to search for the best K.
 #Plot the optimal K
-#Fit the model with the optimal K and use cross-validation, saving 35 percent of the data for your testing set.
+#Fit the model with the optimal K and use cross-validation, saving 35 percent of the data for testing set.
 #Print the confusion matrix and the classification report.
 
 X=anes[['age_cont','feel_rep_cand_cont']]
@@ -63,7 +63,6 @@ class_report=classification_report(y_test,y_pred)
 print(class_report)
 
 #2. Fit a KNN model that predicts vote in the 2016 election using all variables-- find optimal K.
-## Your answers here
 X=anes[['pay_attn_pol_cont', 'int_follow_campg', 'anything_like_dem_cand',
        'anything_like_rep_cand', 'approve_congr', 'things_right_track',
        'feel_dem_cand_cont', 'feel_rep_cand_cont', 'how_many_live_hh_cont',
@@ -101,7 +100,6 @@ sns.lineplot(x=k_values,y=erromea)
 plt.scatter(k_values[erromea.index(min(erromea))], min(erromea), marker='X', color = 'red')
 
 #3.Fit a KNN model that predicts vote on Trump and Clinton in the 2016 election, using all variables--find optimal K.
-## Your answers here
 TC_anes=anes[(anes['vote_pres_2016']=='Trump')|(anes['vote_pres_2016']=='Clinton')]
 X=TC_anes[['pay_attn_pol_cont', 'int_follow_campg', 'anything_like_dem_cand',
        'anything_like_rep_cand', 'approve_congr', 'things_right_track',
