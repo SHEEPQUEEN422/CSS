@@ -1,4 +1,7 @@
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV,cross_val_score
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -10,6 +13,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 import pandas as pd
+
 
 print(os.getcwd())
 anes = pd.read_csv("/home/hjunyi/b_ProblemSet_Week08_ds1.5/anes2016.csv")
@@ -196,4 +200,177 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Tr
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
 plt.title('Confusion Matrix')
+plt.show()
+
+#7.Fit a Logistic Regression, searching for the best L1 tuning parameter. 
+elastic_net_model = LogisticRegression(penalty='elasticnet', solver='saga', max_iter=1000, l1_ratio=0.5)
+param_grid = {
+    'C': [0.01, 0.1, 1, 10, 100], 
+    'l1_ratio': [0.1, 0.5, 0.7, 0.9]  
+}
+grid_search = GridSearchCV(elastic_net_model, param_grid, cv=4, scoring='accuracy')
+grid_search.fit(X_train, y_train)
+best_params = grid_search.best_params_
+print('Best parameters found: ', best_params)
+
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+
+cm = confusion_matrix(y_test, y_pred)
+print('Confusion Matrix:\n', cm)
+
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Trump'], yticklabels=['Not Trump', 'Trump'])
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.title('Confusion Matrix')
+plt.show()
+
+print('Classification Report:\n', classification_report(y_test, y_pred))
+
+#8.Fit a Logistic Regression, searching for the best L2 tuning parameter.
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+param_grid = {'C': [0.01, 0.1, 1, 10, 100, 1000]}
+l2_model = LogisticRegression(penalty='l2', solver='lbfgs', max_iter=1000)
+
+grid_search = GridSearchCV(l2_model, param_grid, cv=4, scoring='accuracy')
+grid_search.fit(X_train_scaled, y_train)
+
+best_l2_model = grid_search.best_estimator_
+best_C = grid_search.best_params_['C']
+print(f"Best C for L2 regularization: {best_C}")
+
+y_pred = best_l2_model.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+print(f"Accuracy for L2-tuned Logistic Regression: {accuracy}")
+print(f"Confusion Matrix for L2-tuned Logistic Regression:\n{cm}")
+print(f"Classification Report:\n{classification_report(y_test, y_pred)}")
+
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Trump'], yticklabels=['Not Trump', 'Trump'])
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.title('Confusion Matrix for L2-tuned Logistic Regression')
+plt.show()
+
+#9. Random Forest
+param_grid_rf = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [10, 20, 30, None],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4],
+    'bootstrap': [True, False]
+}
+
+grid_rf = GridSearchCV(estimator=rf, param_grid=param_grid_rf, cv=4, scoring='accuracy', n_jobs=-1)
+grid_rf.fit(X_train_scaled, y_train)
+
+best_rf = grid_rf.best_estimator_
+print(f"Best parameters for Random Forest: {grid_rf.best_params_}")
+
+y_pred_rf = best_rf.predict(X_test_scaled)
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+print(f"Accuracy for Random Forest: {accuracy_rf}")
+print(f"Confusion Matrix for Random Forest:\n{confusion_matrix(y_test, y_pred_rf)}")
+print(f"Classification Report for Random Forest:\n{classification_report(y_test, y_pred_rf)}")
+
+cm_rf = confusion_matrix(y_test, y_pred_rf)
+sns.heatmap(cm_rf, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Trump'], yticklabels=['Not Trump', 'Trump'])
+plt.title('Confusion Matrix for Random Forest')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+#10.Adaboosting
+ada = AdaBoostClassifier(random_state=42)
+
+# Set up the parameter grid for tuning AdaBoost
+param_grid_ada = {
+    'n_estimators': [50, 100, 200],
+    'learning_rate': [0.01, 0.1, 1, 10]
+}
+
+# Use GridSearchCV to find the best parameters for AdaBoost
+grid_ada = GridSearchCV(estimator=ada, param_grid=param_grid_ada, cv=4, scoring='accuracy', n_jobs=-1)
+grid_ada.fit(X_train_scaled, y_train)
+
+# Best AdaBoost model
+best_ada = grid_ada.best_estimator_
+print(f"Best parameters for AdaBoost: {grid_ada.best_params_}")
+
+# Evaluate AdaBoost on test data
+y_pred_ada = best_ada.predict(X_test_scaled)
+accuracy_ada = accuracy_score(y_test, y_pred_ada)
+print(f"Accuracy for AdaBoost: {accuracy_ada}")
+print(f"Confusion Matrix for AdaBoost:\n{confusion_matrix(y_test, y_pred_ada)}")
+print(f"Classification Report for AdaBoost:\n{classification_report(y_test, y_pred_ada)}")
+
+# Confusion Matrix heatmap
+cm_ada = confusion_matrix(y_test, y_pred_ada)
+sns.heatmap(cm_ada, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Trump'], yticklabels=['Not Trump', 'Trump'])
+plt.title('Confusion Matrix for AdaBoost')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+#10. SVCs
+svc = SVC(kernel='rbf')
+param_grid_svc = {
+    'C': [0.01, 0.1, 1, 10, 100],
+    'gamma': ['scale', 'auto']  # Gamma is another important parameter for RBF kernel
+}
+
+grid_svc = GridSearchCV(estimator=svc, param_grid=param_grid_svc, cv=4, scoring='accuracy', n_jobs=-1)
+grid_svc.fit(X_train_scaled, y_train)
+
+best_svc = grid_svc.best_estimator_
+print(f"Best parameters for SVC: {grid_svc.best_params_}")
+
+y_pred_svc = best_svc.predict(X_test_scaled)
+accuracy_svc = accuracy_score(y_test, y_pred_svc)
+print(f"Accuracy for SVC: {accuracy_svc}")
+print(f"Confusion Matrix for SVC:\n{confusion_matrix(y_test, y_pred_svc)}")
+print(f"Classification Report for SVC:\n{classification_report(y_test, y_pred_svc)}")
+
+cm_svc = confusion_matrix(y_test, y_pred_svc)
+sns.heatmap(cm_svc, annot=True, fmt='d', cmap='Blues', xticklabels=['Not Trump', 'Trump'], yticklabels=['Not Trump', 'Trump'])
+plt.title('Confusion Matrix for SVC')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+#11. Predict swing voters, using optimal L2 regularization, searching for the best parameter
+y = anes['swing_2016_2012']  
+X = anes[['age_cont', 'feel_rep_cand_cont', 'feel_dem_cand_cont', 'lib_con_scale_cont', 'pay_attn_pol_cont']]  # Example features
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.35, random_state=42)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+log_reg = LogisticRegression(penalty='l2', solver='lbfgs', max_iter=10000)
+
+param_grid = {'C': [0.01, 0.1, 1, 10, 100]}
+grid_search = GridSearchCV(estimator=log_reg, param_grid=param_grid, cv=4, scoring='accuracy', n_jobs=-1)
+grid_search.fit(X_train_scaled, y_train)
+
+best_log_reg = grid_search.best_estimator_
+print(f"Best C value for logistic regression: {grid_search.best_params_}")
+
+y_pred = best_log_reg.predict(X_test_scaled)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy for predicting swing voters (2016-2012): {accuracy}")
+print(f"Confusion Matrix:\n{confusion_matrix(y_test, y_pred)}")
+print(f"Classification Report:\n{classification_report(y_test, y_pred)}")
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['No Swing', 'Swing'], yticklabels=['No Swing', 'Swing'])
+plt.title('Confusion Matrix for Swing Voter Prediction (2016-2012)')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
 plt.show()
